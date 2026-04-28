@@ -3,27 +3,51 @@ services:
   web:
     build:
       context: ./app
+      secrets:
+        - cg_username
+        - cg_password
     ports:
       - "8000:8000"
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/todos
-      SECRET_KEY: not-so-secret
+      DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/todos
+      SECRET_KEY: ${SECRET_KEY}
     depends_on:
-      - db
-    volumes:
-      - ./app:/app
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+#    volumes:
+#      - ./app:/app
 
   db:
-    image: postgres:15
+    image: cgr.dev/chainguard/postgres:latest@sha256:33d5779b58a19eace6f6e4d9f22a0486feb76da2a2b947411970d70d5612a7c6
+    #image: postgres:15
     ports:
       - "5432:5432"
     environment:
       POSTGRES_DB: todos
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    networks:
+      - backend
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+secrets:
+  cg_username:
+    environment: CHAINGUARD_PYTHON_IDENTITY_ID
+  cg_password:
+    environment: CHAINGUARD_PYTHON_TOKEN
 
 volumes:
   postgres_data:
+
+networks:
+  backend:
+    driver: bridge
