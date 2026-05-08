@@ -1,4 +1,4 @@
-FROM cgr.dev/chainguard/python:latest-dev@sha256:2c0fbbac86b72ebb4bfee15b64d8cd5fd6b49dfe7bb279b5c9f193198a84c1c9 AS builder
+FROM cgr.dev/chainguard/python:latest-dev@sha256:2c5b3ffa5048af93bcb636b4bda886534ab0e85f0abd4c8160e7dbc8910e1b95 AS builder
 
 USER 0
 RUN apk add --no-cache postgresql-dev 
@@ -16,7 +16,7 @@ RUN --mount=type=secret,id=cg_username \
     -r requirements.txt
 
 
-FROM cgr.dev/chainguard/python:latest@sha256:18a4fbda8c280978b6aa5329f7acd4dbb106876e76fdc87913855ebf4876f2ff
+FROM cgr.dev/chainguard/python:latest@sha256:6be0c63262bfa62a10e08facd1ad315af2f370226d2bdb636b88d2832020bbd1
 COPY --from=builder /install/lib/python3.14/site-packages /usr/lib/python3.14/site-packages
 WORKDIR /app
 COPY --chown=nonroot:nonroot . /app
