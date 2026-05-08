@@ -20,7 +20,7 @@ services:
 #      - ./app:/app
 
   db:
-    image: cgr.dev/chainguard/postgres:latest@sha256:33d5779b58a19eace6f6e4d9f22a0486feb76da2a2b947411970d70d5612a7c6
+    image: cgr.dev/chainguard/postgres:latest@aeac2af5366a7370e574c2b9780391aa8744747de82d0bed43888c75bb8f6ba3
     #image: postgres:15
     ports:
       - "5432:5432"
