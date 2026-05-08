@@ -1,4 +1,4 @@
-version: '3.9'
+name: partner-se-tech-exercise
 services:
   web:
     build:
